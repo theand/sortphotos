@@ -31,7 +31,7 @@ exiftool_location = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'I
 
 # -------- convenience methods -------------
 
-def parse_date_exif(date_string):
+def parse_date_exif(date_string, group):
     """
     extract date info from EXIF data
     YYYY:MM:DD HH:MM:SS
@@ -79,7 +79,7 @@ def parse_date_exif(date_string):
         if len(time_entries) > 2:
             time_zone = time_entries[2].split(':')  # ['HH', 'MM']
 
-            if len(time_zone) == 2:
+            if len(time_zone) == 2 and group != "File":
                 time_zone_hour = int(time_zone[0])
                 time_zone_min = int(time_zone[1])
 
@@ -146,7 +146,7 @@ def get_oldest_timestamp(data, additional_groups_to_ignore, additional_tags_to_i
                 date = date[0]
 
             try:
-                exifdate = parse_date_exif(date)  # check for poor-formed exif data, but allow continuation
+                exifdate = parse_date_exif(date, key.split(':')[0])  # check for poor-formed exif data, but allow continuation
             except Exception as e:
                 exifdate = None
 
