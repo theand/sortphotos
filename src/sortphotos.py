@@ -8,8 +8,8 @@ Copyright (c) S. Andrew Ning. All rights reserved.
 
 """
 
-from __future__ import print_function
-from __future__ import with_statement
+
+
 import subprocess
 import os
 import sys
@@ -131,7 +131,7 @@ def get_oldest_timestamp(data, additional_groups_to_ignore, additional_tags_to_i
         print('All relevant tags:')
 
     # run through all keys
-    for key in data.keys():
+    for key in list(data.keys()):
 
         # check if this key needs to be ignored, or is in the set of tags that must be used
         if (key not in ignore_tags) and (key.split(':')[0] not in ignore_groups) and 'GPS' not in key:
@@ -372,7 +372,7 @@ def sortPhotos(src_dir, dest_dir, sort_format, rename_format, recursive=False,
             filename = date.strftime(rename_format) + ext.lower()
 
         # setup destination file
-        dest_file = os.path.join(dest_file, filename.encode('utf-8'))
+        dest_file = os.path.join(dest_file.encode('utf-8'), filename.encode('utf-8'))
         root, ext = os.path.splitext(dest_file)
 
         if verbose:
@@ -381,7 +381,7 @@ def sortPhotos(src_dir, dest_dir, sort_format, rename_format, recursive=False,
                 name += '(copy): '
             else:
                 name += '(move): '
-            print(name + dest_file)
+            print(str(name) + str(dest_file))
 
 
         # check for collisions
@@ -390,7 +390,7 @@ def sortPhotos(src_dir, dest_dir, sort_format, rename_format, recursive=False,
 
         while True:
 
-            if (not test and os.path.isfile(dest_file)) or (test and dest_file in test_file_dict.keys()):  # check for existing name
+            if (not test and os.path.isfile(dest_file)) or (test and dest_file in list(test_file_dict.keys())):  # check for existing name
                 if test:
                     dest_compare = test_file_dict[dest_file]
                 else:
