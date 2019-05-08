@@ -110,7 +110,6 @@ def parse_date_exif(date_string, group):
     return date
 
 
-
 def get_oldest_timestamp(data, additional_groups_to_ignore, additional_tags_to_ignore, print_all_tags=False):
     """data as dictionary from json.  Should contain only time stamps except SourceFile"""
 
@@ -125,7 +124,6 @@ def get_oldest_timestamp(data, additional_groups_to_ignore, additional_tags_to_i
     # ssetup tags to ignore
     ignore_groups = ['ICC_Profile'] + additional_groups_to_ignore
     ignore_tags = ['SourceFile', 'XMP:HistoryWhen'] + additional_tags_to_ignore
-
 
     if print_all_tags:
         print('All relevant tags:')
@@ -165,7 +163,6 @@ def get_oldest_timestamp(data, additional_groups_to_ignore, additional_tags_to_i
         print()
 
     return src_file, oldest_date, oldest_keys
-
 
 
 def check_for_early_morning_photos(date, day_begins):
@@ -221,7 +218,6 @@ class ExifTool(object):
 
 
 # ---------------------------------------
-
 
 
 def sortPhotos(src_dir, dest_dir, sort_format, rename_format, recursive=False,
@@ -290,12 +286,10 @@ def sortPhotos(src_dir, dest_dir, sort_format, rename_format, recursive=False,
     else:
         args += ['-time:all']
 
-
     if recursive:
         args += ['-r']
 
     args += [src_dir]
-
 
     # get all metadata
     with ExifTool(verbose=verbose) as e:
@@ -320,7 +314,7 @@ def sortPhotos(src_dir, dest_dir, sort_format, rename_format, recursive=False,
         src_file.encode('utf-8')
 
         if verbose:
-        # write out which photo we are at
+            # write out which photo we are at
             ending = ']'
             if test:
                 ending = '] (TEST - no files are being moved/copied)'
@@ -354,7 +348,6 @@ def sortPhotos(src_dir, dest_dir, sort_format, rename_format, recursive=False,
         # early morning photos can be grouped with previous day (depending on user setting)
         date = check_for_early_morning_photos(date, day_begins)
 
-
         # create folder structure
         dir_structure = date.strftime(sort_format)
         dirs = dir_structure.split('/')
@@ -383,7 +376,6 @@ def sortPhotos(src_dir, dest_dir, sort_format, rename_format, recursive=False,
                 name += '(move): '
             print(name + dest_file)
 
-
         # check for collisions
         append = 1
         fileIsIdentical = False
@@ -410,7 +402,6 @@ def sortPhotos(src_dir, dest_dir, sort_format, rename_format, recursive=False,
             else:
                 break
 
-
         # finally move or copy the file
         if test:
             test_file_dict[dest_file] = src_file
@@ -425,12 +416,9 @@ def sortPhotos(src_dir, dest_dir, sort_format, rename_format, recursive=False,
                 else:
                     shutil.move(src_file, dest_file)
 
-
-
         if verbose:
             print()
             # sys.stdout.flush()
-
 
     if not verbose:
         print()
@@ -488,6 +476,7 @@ def main():
         args.copy, args.test, not args.keep_duplicates, args.day_begins,
         args.ignore_groups, args.ignore_tags, args.use_only_groups,
         args.use_only_tags, not args.silent)
+
 
 if __name__ == '__main__':
     main()
