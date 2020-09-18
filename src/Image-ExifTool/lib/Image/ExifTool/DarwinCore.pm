@@ -6,7 +6,7 @@
 # Revisions:    2013-01-28 - P. Harvey Created
 #
 # References:   1) http://rs.tdwg.org/dwc/index.htm
-#               2) http://u88.n24.queensu.ca/exiftool/forum/index.php/topic,4442.0/all.html
+#               2) https://exiftool.org/forum/index.php/topic,4442.0/all.html
 #------------------------------------------------------------------------------
 
 package Image::ExifTool::DarwinCore;
@@ -15,7 +15,7 @@ use strict;
 use vars qw($VERSION);
 use Image::ExifTool::XMP;
 
-$VERSION = '1.02';
+$VERSION = '1.04';
 
 my %dateTimeInfo = (
     # NOTE: Do NOT put "Groups" here because Groups hash must not be common!
@@ -28,7 +28,7 @@ my %dateTimeInfo = (
 my %materialSample = (
     STRUCT_NAME => 'DarwinCore MaterialSample',
     NAMESPACE => 'dwc',
-    materialSampleID            => { },
+    materialSampleID    => { },
 );
 
 my %event = (
@@ -40,7 +40,20 @@ my %event = (
     eventDate           => { %dateTimeInfo, Groups => { 2 => 'Time' } },
     eventID             => { },
     eventRemarks        => { Writable => 'lang-alt' },
-    eventTime           => { %dateTimeInfo, Groups => { 2 => 'Time' } },
+    eventTime => {
+        Groups => { 2 => 'Time' },
+        Writable => 'string', # (so we can format this ourself)
+        Shift => 'Time',
+        # (pass straight through if this isn't a full date/time value)
+        ValueConv => 'Image::ExifTool::XMP::ConvertXMPDate($val)',
+        PrintConv => '$self->ConvertDateTime($val)',
+        ValueConvInv => 'Image::ExifTool::XMP::FormatXMPDate($val) or $val',
+        PrintConvInv => q{
+            my $v = $self->InverseDateTime($val,undef,1);
+            undef $Image::ExifTool::evalWarning;
+            return $v || $val;
+        },
+    },
     fieldNotes          => { },
     fieldNumber         => { },
     habitat             => { },
@@ -341,7 +354,7 @@ This file contains tag definitions for the Darwin Core XMP namespace.
 
 =head1 AUTHOR
 
-Copyright 2003-2018, Phil Harvey (phil at owl.phy.queensu.ca)
+Copyright 2003-2020, Phil Harvey (philharvey66 at gmail.com)
 
 This library is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
