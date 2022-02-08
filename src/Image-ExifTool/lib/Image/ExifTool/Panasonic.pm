@@ -37,7 +37,7 @@ use vars qw($VERSION %leicaLensTypes);
 use Image::ExifTool qw(:DataAccess :Utils);
 use Image::ExifTool::Exif;
 
-$VERSION = '2.13';
+$VERSION = '2.16';
 
 sub ProcessLeicaLEIC($$$);
 sub WhiteBalanceConv($;$$);
@@ -449,7 +449,7 @@ my %shootingMode = (
             same as the number printed on the camera body
         },
         PrintConv => q{
-            return $val unless $val=~/^([A-Z]\d{2})(\d{2})(\d{2})(\d{2})(\d{4})/;
+            return $val unless $val=~/^([A-Z][0-9A-Z]{2})(\d{2})(\d{2})(\d{2})(\d{4})/;
             my $yr = $2 + ($2 < 70 ? 2000 : 1900);
             return "($1) $yr:$3:$4 no. $5";
         },
@@ -1423,6 +1423,18 @@ my %shootingMode = (
         Name => 'NoiseReductionStrength',
         Writable => 'rational64s',
     },
+    0xe4 => { #IB
+        Name => 'LensTypeModel',
+        Condition => '$format eq "int16u"',
+        Writable => 'int16u',
+        RawConv => q{
+            return undef unless $val;
+            require Image::ExifTool::Olympus; # (to load Composite LensID)
+            return $val;
+        },
+        ValueConv => '$_=sprintf("%.4x",$val); s/(..)(..)/$2 $1/; $_',
+        ValueConvInv => '$val =~ s/(..) (..)/$2$1/; hex($val)',
+    },
     0x0e00 => {
         Name => 'PrintIM',
         Description => 'Print Image Matching',
@@ -2118,6 +2130,7 @@ my %shootingMode = (
         Name => 'UserProfile',
         Writable => 'string',
     },
+    # 0x357 int32u - 0=DNG, 3162=JPG (ref 23)
     0x359 => { #23
         Name => 'ISOSelected',
         Writable => 'int32s',
@@ -2134,7 +2147,19 @@ my %shootingMode = (
         PrintConv => 'sprintf("%.1f", $val)',
         PrintConvInv => '$val',
     },
-    # 0x357 int32u - 0=DNG, 3162=JPG (ref 23)
+    0x035b => { #IB
+        Name => 'CorrelatedColorTemp', # (in Kelvin)
+        Writable => 'int16u',
+    },
+    0x035c => { #IB
+        Name => 'ColorTint', # (same units as Adobe is using)
+        Writable => 'int16s',
+    },
+    0x035d => { #IB
+        Name => 'WhitePoint', # (x/y)
+        Writable => 'rational64u',
+        Count => 2,
+    },
 );
 
 # Type 2 tags (ref PH)
@@ -2471,7 +2496,8 @@ my %shootingMode = (
                 # AdvancedSceneType=5 for automatic mode iA (ref 19)
                 if ($prt) {
                     return $prt if $v[1] == 1;
-                    return "$prt (intelligent auto)" if $v[1] == 5;
+                    return "$prt (intelligent auto)" if $v[1] == 5; #forum11523
+                    return "$prt (intelligent auto plus)" if $v[1] == 7; #forum11523
                     return "$prt ($v[1])";
                 }
                 return "Unknown ($val)";
@@ -2494,10 +2520,19 @@ my %shootingMode = (
             '9 3' => 'Objects', #(FZ28)
             '9 4' => 'Creative Macro', #(FZ28)
             #'9 5' - ? (GF3)
+            '18 1' => 'High Sensitivity', #forum11523 (TZ5)
+            '20 1' => 'Fireworks', #forum11523 (TZ5)
             '21 2' => 'Illuminations', #(FZ28)
             '21 4' => 'Creative Night Scenery', #(FZ28)
             #'21 5' - ? (LX3)
+            '26 1' => 'High-speed Burst (shot 1)', #forum11523 (TZ5)
+            '27 1' => 'High-speed Burst (shot 2)', #forum11523 (TZ5)
+            '29 1' => 'Snow', #forum11523 (TZ5)
+            '30 1' => 'Starry Sky', #forum11523 (TZ5)
+            '31 1' => 'Beach', #forum11523 (TZ5)
+            '36 1' => 'High-speed Burst (shot 3)', #forum11523 (TZ5)
             #'37 5' - ? (various)
+            '39 1' => 'Aerial Photo / Underwater / Multi-aspect', #forum11523 (TZ5)
             '45 2' => 'Cinema', #(GF2)
             '45 7' => 'Expressive', #(GF1,GF2)
             '45 8' => 'Retro', #(GF1,GF2)
@@ -2542,16 +2577,6 @@ my %shootingMode = (
             'DMC-TZ40 90 10' => 'Toy Effect',
             'DMC-TZ40 90 11' => 'Dynamic Monochrome',
             'DMC-TZ40 90 12' => 'Soft',
-            # some TZ5 modes are different (forum11523)
-            # (these may be the same for the  TZ4, TZ11 and TZ15)
-            'DMC-TZ5 18 1' => 'High Sensitivity',
-            'DMC-TZ5 26 1' => 'High-speed Burst (shot 1)',
-            'DMC-TZ5 27 1' => 'High-speed Burst (shot 2)',
-            'DMC-TZ5 29 1' => 'Snow',
-            'DMC-TZ5 30 1' => 'Starry Sky',
-            'DMC-TZ5 31 1' => 'Beach',
-            'DMC-TZ5 36 1' => 'High-speed Burst (shot 3)',
-            'DMC-TZ5 39 1' => 'Aerial Photo / Underwater / Multi-aspect',
         },
     },
 );
@@ -2812,7 +2837,7 @@ Panasonic and Leica maker notes in EXIF information.
 
 =head1 AUTHOR
 
-Copyright 2003-2020, Phil Harvey (philharvey66 at gmail.com)
+Copyright 2003-2022, Phil Harvey (philharvey66 at gmail.com)
 
 This library is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

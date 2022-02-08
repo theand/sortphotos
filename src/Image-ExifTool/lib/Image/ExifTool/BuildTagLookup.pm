@@ -35,7 +35,7 @@ use Image::ExifTool::Sony;
 use Image::ExifTool::Validate;
 use Image::ExifTool::MacOS;
 
-$VERSION = '3.37';
+$VERSION = '3.47';
 @ISA = qw(Exporter);
 
 sub NumbersFirst($$);
@@ -68,6 +68,7 @@ my %tweakOrder = (
     IPTC    => 'Exif',  # put IPTC after EXIF,
     GPS     => 'XMP',   # etc...
     Composite => 'Extra',
+    CBOR    => 'JSON',
     GeoTiff => 'GPS',
     CanonVRD=> 'CanonCustom',
     DJI     => 'Casio',
@@ -141,6 +142,9 @@ my %formatOK = (
     signed      => 1,
     unsigned    => 1,
     utf8        => 1,
+    Unicode     => 1, # (Microsoft Xtra)
+    GUID        => 1, # (Microsoft Xtra)
+    vt_filetime => 1, # (Microsoft Xtra)
 );
 
 # Descriptions for the TagNames documentation
@@ -310,9 +314,10 @@ C<integer> is a string of digits (possibly beginning with a '+' or '-'),
 C<real> is a floating point number, C<rational> is entered as a floating
 point number but stored as two C<integer> strings separated by a '/'
 character, C<date> is a date/time string entered in the format "YYYY:mm:dd
-HH:MM:SS[.ss][+/-HH:MM]", C<boolean> is either "True" or "False", C<struct>
-indicates a structured tag, and C<lang-alt> is a tag that supports alternate
-languages.
+HH:MM:SS[.ss][+/-HH:MM]", C<boolean> is either "True" or "False" (but "true"
+and "false" may be written as a ValueConv value for compatibility with
+non-conforming applications), C<struct> indicates a structured tag, and
+C<lang-alt> is a tag that supports alternate languages.
 
 When reading, C<struct> tags are extracted only if the L<Struct|../ExifTool.html#Struct> (-struct)
 option is used.  Otherwise the corresponding I<Flattened> tags, indicated by
@@ -430,11 +435,13 @@ L<UserData|Image::ExifTool::TagNames/QuickTime UserData Tags>, and
 finally in L<Keys|Image::ExifTool::TagNames/QuickTime Keys Tags>,
 but this order may be changed by setting the PREFERRED level of the
 appropriate table in the config file (see
-L<example.config|../config.html#PREF> in the full distribution for
-an example).  ExifTool currently writes only top-level metadata in
-QuickTime-based files; it extracts other track-specific and timed
-metadata, but can not yet edit tags in these locations (with the
-exception of track-level date/time tags).
+L<example.config|../config.html#PREF> in the full distribution for an
+example).  Note that some tags with the same name but different ID's may
+exist in the same location, but the family 7 group names may be used to
+differentiate these.  ExifTool currently writes only top-level metadata in
+QuickTime-based files; it extracts other track-specific and timed metadata,
+but can not yet edit tags in these locations (with the exception of
+track-level date/time tags).
 
 Alternate language tags may be accessed for
 L<ItemList|Image::ExifTool::TagNames/QuickTime ItemList Tags> and
@@ -453,9 +460,19 @@ According to the specification, integer-format QuickTime date/time tags
 should be stored as UTC.  Unfortunately, digital cameras often store local
 time values instead (presumably because they don't know the time zone).  For
 this reason, by default ExifTool does not assume a time zone for these
-values.  However, if the L<QuickTimeUTC|../ExifTool.html#QuickTimeUTC> API option is set, then ExifTool will
+values.  However, if the API L<QuickTimeUTC|../ExifTool.html#QuickTimeUTC> option is set, then ExifTool will
 assume these values are properly stored as UTC, and will convert them to
 local time when extracting.
+
+When writing string-based date/time tags, the system time zone is added if
+the PrintConv option is enabled and no time zone is specified.  This is
+because Apple software may display crazy values if the time zone is missing
+for some tags.
+
+By default ExifTool will remove null padding from some QuickTime containers
+in Canon CR3 files when writing, but the
+L<QuickTimePad|../ExifTool.html#QuickTimePad> option may be used to preserve
+the original size by padding with nulls if necessary.
 
 See
 L<https://developer.apple.com/library/archive/documentation/QuickTime/QTFF/>
@@ -628,12 +645,14 @@ overlapping EXIF, IPTC and XMP tags to be reconciled when reading, and
 synchronized when writing.  The MWG Composite tags below are designed to aid
 in the implementation of these recommendations.  As well, the MWG defines
 new XMP tags which are listed in the subsequent tables below.  See
-L<http://www.metadataworkinggroup.org/> for the official MWG specification.
+L<https://web.archive.org/web/20180919181934/http://www.metadataworkinggroup.org/pdf/mwg_guidance.pdf>
+for the official MWG specification.
 },
     MacOS => q{
 On MacOS systems, the there are additional MDItem and XAttr Finder tags that
 may be extracted.  These tags are not extracted by default -- they must be
-specifically requested or enabled via an API option.
+specifically requested or enabled via an API option.  (Except when reading
+MacOS "._" files directly, see below.)
 
 The tables below list some of the tags that may be extracted, but ExifTool
 will extract all available information even for tags not listed.
@@ -650,7 +669,7 @@ L<Image::ExifTool::BuildTagLookup|Image::ExifTool::BuildTagLookup>.
 
 ~head1 AUTHOR
 
-Copyright 2003-2020, Phil Harvey (philharvey66 at gmail.com)
+Copyright 2003-2022, Phil Harvey (philharvey66 at gmail.com)
 
 This library is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
@@ -691,10 +710,14 @@ my %shortcutNotes = (
         large binary data tags which may be excluded to reduce memory usage if
         memory limitations are a problem
     },
+   'ls-l' => q{
+        mimics columns shown by Unix "ls -l" command.  Includes some tags which are
+        extracted only if the API L<SystemTags|../ExifTool.html#SystemTags> option
+        is enabled
+    },
 );
 
-
-# same thing for RIFF INFO tags found in the EXIF spec
+# lookup for RIFF INFO tags which are found in the EXIF spec
 my %riffSpec = (
     IARL => 1,  ICRD => 1,  IGNR => 1,  IPLT => 1,  ISRC => 1,
     IART => 1,  ICRP => 1,  IKEY => 1,  IPRD => 1,  ISRF => 1,
@@ -734,7 +757,7 @@ sub new
     my (%tagNameInfo, %id, %longID, %longName, %shortName, %tableNum,
         %tagLookup, %tagExists, %noLookup, %tableWritable, %sepTable, %case,
         %structs, %compositeModules, %isPlugin, %flattened, %structLookup,
-        @writePseudo);
+        @writePseudo, %dupXmpTag);
     $self->{TAG_NAME_INFO} = \%tagNameInfo;
     $self->{ID_LOOKUP} = \%id;
     $self->{LONG_ID} = \%longID;
@@ -882,6 +905,12 @@ TagID:  foreach $tagID (@keys) {
                 foreach (@grps) {
                     warn "Group name starts with 'ID-' for $short $name\n" if /^ID-/i;
                 }
+                if ($isXMP and not $$tagInfo{Avoid} and not $$tagInfo{Struct} and
+                    ($$tagInfo{Writable} or $$table{WRITABLE}))
+                {
+                    $dupXmpTag{$name} and warn "Duplicate writable XMP tag $name\n";
+                    $dupXmpTag{$name} = 1;
+                }
                 # validate Name (must not start with a digit or else XML output will not be valid;
                 # must not start with a dash or exiftool command line may get confused)
                 if ($name !~ /^[_A-Za-z][-\w]+$/ and
@@ -1028,9 +1057,14 @@ TagID:  foreach $tagID (@keys) {
                     $note =~ s/(^[ \t]+|[ \t]+$)//mg;
                     push @values, "($note)";
                 }
-                if ($isXMP and lc $tagID ne lc $name) {
-                    # add note about different XMP Tag ID
-                    my $note = $$tagInfo{RootTagInfo} ? $tagID : "called $tagID by the spec";
+                if ($isXMP and (lc $tagID ne lc $name or $$tagInfo{NotFlat})) {
+                    my $note;
+                    if ($$tagInfo{NotFlat}) {
+                        $note = 'NOT a flattened tag!';
+                    } else {
+                        # add note about different XMP Tag ID
+                        $note = $$tagInfo{RootTagInfo} ? $tagID : "called $tagID by the spec";
+                    }
                     if ($$tagInfo{Notes}) {
                         $values[-1] =~ s/^\(/($note; /;
                     } else {
@@ -1307,6 +1341,7 @@ TagID:  foreach $tagID (@keys) {
                         my $count = $$tagInfo{Count} || 1;
                         # adjust count to Writable size if different than Format
                         if ($writable and $format and $writable ne $format and
+                            $writable ne 'string' and $format ne 'string' and
                             $Image::ExifTool::Exif::formatNumber{$writable} and
                             $Image::ExifTool::Exif::formatNumber{$format})
                         {
@@ -2094,7 +2129,7 @@ sub WriteTagNames($$)
         $short = $$shortName{$tableName};
         my @names = split ' ', $short;
         my $class = shift @names;
-        if (@names) {
+        if (@names and $class ne 'Other') {
             # add heading for tables without a Main
             unless ($heading eq $class) {
                 $heading = $class;
@@ -2122,6 +2157,13 @@ sub WriteTagNames($$)
         $short = $$shortName{$tableName};
         $short = $tableName unless $short;
         $url = "$short.html";
+        # handle various tables in "Other.pm"
+        if ($short =~ /^Other (.*)/) {
+            $short = $1;
+            $url = 'Other.html#' . $1;
+        } else {
+            $url = "$short.html";
+        }
         print HTMLFILE "<a href='${url}'>$short</a>";
         ++$count;
     }
@@ -2720,7 +2762,7 @@ Returned list of writable pseudo tags.
 
 =head1 AUTHOR
 
-Copyright 2003-2020, Phil Harvey (philharvey66 at gmail.com)
+Copyright 2003-2022, Phil Harvey (philharvey66 at gmail.com)
 
 This library is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
