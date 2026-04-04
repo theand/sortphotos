@@ -64,7 +64,7 @@ def parse_date_exif(date_string, group):
     second = 0
 
     if len(elements) > 1:
-        time_entries = re.split('(\+|-|Z)', elements[1])  # ['HH:MM:SS', '+', 'HH:MM']
+        time_entries = re.split(r'(\+|-|Z)', elements[1])  # ['HH:MM:SS', '+', 'HH:MM']
         time = time_entries[0].split(':')  # ['HH', 'MM', 'SS']
 
         if len(time) == 3:
