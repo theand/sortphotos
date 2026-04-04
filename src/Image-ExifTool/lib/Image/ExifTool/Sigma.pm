@@ -19,15 +19,13 @@ use strict;
 use vars qw($VERSION %sigmaLensTypes);
 use Image::ExifTool::Exif;
 
-$VERSION = '1.31';
+$VERSION = '1.36';
 
 # sigma LensType lookup (ref IB)
 %sigmaLensTypes = (
     Notes => q{
         Sigma LensType values are hexadecimal numbers stored as a string (without
-        the leading "0x").  Decimal values have been added to differentiate lenses
-        which would otherwise have the same LensType, and are used by the Composite
-        LensID tag when attempting to identify the specific lens model.
+        the leading "0x").
     },
     # 0x0 => 'Sigma 50mm F2.8 EX Macro', (0x0 used for other lenses too)
     # 0x8 - 18-125mm LENSARANGE@18mm=22-4
@@ -226,9 +224,36 @@ $VERSION = '1.31';
     0x1008 => 'Sigma 50mm F2.8 Macro', #NJ (DP3 Quattro kit)
     0x1009 => 'Sigma 14mm F4', #NJ (DP0 Quattro kit)
     # L-mount lenses?:
+    0x4001 => 'Lumix S 24-105mm F4 Macro OIS (S-R24105)', #IB
+    0x4002 => 'Lumix S 70-200mm F4 OIS (S-R70200)', #IB
+    0x4003 => 'Lumix S 50mm F1.4 (S-X50)', #IB
+    0x4006 => 'Lumix S 24-70mm F2.8 (S-E2470)', #IB
+    0x4007 => 'Lumix S 16-35mm F4 (S-R1635)', #IB
+    0x4008 => 'Lumix S 70-200mm F2.8 OIS (S-E70200)', #IB
+    0x4010 => 'Lumix S 35mm F1.8 (S-S35)', #IB
+    0x4011 => 'LUMIX S 18mm F1.8 (S-S18)', #IB
+    0x400b => 'Lumix S 20-60mm F3.5-5.6 (S-R2060)', #IB
+    0x400c => 'Lumix S 85mm F1.8 (S-S85)', #IB
+    0x400d => 'Lumix S 70-300 F4.5-5.6 Macro OIS (S-R70300)', #IB
+    0x400f => 'Lumix S 24mm F1.8 (S-S24)', #IB
     0x6001 => 'Sigma 150-600mm F5-6.3 DG OS HSM | S', #PH (NC, fp)
     0x6003 => 'Sigma 45mm F2.8 DG DN | C', #PH (NC, fp)
+    0x6005 => 'Sigma 14-24mm F2.8 DG DN | A', #IB
     0x6006 => 'Sigma 50mm F1.4 DG HSM | A', #IB (014)
+    0x6011 => 'Sigma 24-70mm F2.8 DG DN | A', #IB
+    0x6012 => 'Sigma 100-400mm F5-6.3 DG DN OS | C', #IB
+    0x6013 => 'Sigma 100-400mm F5-6.3 DG DN OS | C + TC-1411', #IB
+    0x6015 => 'Sigma 85mm F1.4 DG DN | A', #IB
+    0x6017 => 'Sigma 65mm F2 DG DN | C', #IB
+    0x6018 => 'Sigma 35mm F2 DG DN | C', #IB
+    0x601a => 'Sigma 28-70mm F2.8 DG DN | C', #IB
+    0x601b => 'Sigma 150-600mm F5-6.3 DG DN OS | S', #IB
+    0x6020 => 'Sigma 35mm F1.4 DG DN | A', #IB
+    0x6021 => 'Sigma 90mm F2.8 DG DN | C', #IB
+    0x6023 => 'Sigma 20mm F2 DG DN | C', #IB
+    0x6025 => 'Sigma 20mm F1.4 DG DN | A', #IB
+    0x6026 => 'Sigma 24mm F1.4 DG DN | A', #IB
+    0x602c => "Sigma 50mm F1.4 DG DN | A (2023)", #IB
     0x8005 => 'Sigma 35mm F1.4 DG HSM | A', #PH (012)
     0x8009 => 'Sigma 18-35mm F1.8 DC HSM | A', #PH
     0x8900 => 'Sigma 70-300mm F4-5.6 DG OS', #PH (SD15)
@@ -387,7 +412,12 @@ $VERSION = '1.31';
         Name => 'Software',
         Priority => 0,
     },
-    0x0019 => 'AutoBracket',
+    0x0019 => {
+        Name => 'AutoBracket',
+        # (some models don't have spaces around "of")
+        PrintConv => '$val =~ s/(\d)of(\d)/$1 of $2/; $val',
+        PrintConvInv => '$val',
+    },
     0x001a => [ #PH
         {
             Name => 'PreviewImageStart',
@@ -530,6 +560,7 @@ $VERSION = '1.31';
         SeparateTable => 'LensType',
         PrintHex => 1,
         PrintConv => \%sigmaLensTypes,
+        PrintInt => 1,
     },{ #PH
         Name => 'LensType',
         Condition => '$$self{MakerNoteSigmaVer} >= 3',
@@ -538,6 +569,7 @@ $VERSION = '1.31';
         SeparateTable => 'LensType',
         PrintHex => 1,
         PrintConv => \%sigmaLensTypes,
+        PrintInt => 1,
     }],
     0x002a => { #PH
         Name => 'LensFocalRange',
@@ -614,8 +646,11 @@ $VERSION = '1.31';
     },
     0x0033 => { #PH
         Name => 'ExposureTime2',
-        Condition => '$$self{Model} !~ / (SD1|SD9|SD15|Merrill|Quattro|fp)$/',
-        Notes => 'models other than the SD1, SD9, SD15 and Merrill/Quattro models',
+        Condition => q{
+            $$self{Model} !~ / (SD1|SD9|SD15|Merrill|Quattro|fp)$/ and
+            $$self{MakerNoteSigmaVer} < 4
+        },
+        Notes => 'only valid for some models',
         ValueConv => '$val * 1e-6',
         ValueConvInv => 'int($val * 1e6 + 0.5)',
         PrintConv => 'Image::ExifTool::Exif::PrintExposureTime($val)',
@@ -668,6 +703,12 @@ $VERSION = '1.31';
     0x003d => { #PH (new for SD15 and SD1)
         Name => 'PictureMode',
         Notes => 'same as ColorMode, but "Standard" when ColorMode is Sepia or B&W',
+    },
+    0x0047 => { #forum17338
+        Name => 'ExposureCompensation',
+        Writable => 'rational64s',
+        PrintConv => '$val and $val =~ s/^(\d)/\+$1/; $val',
+        PrintConvInv => '$val',
     },
     0x0048 => { #PH
         Name => 'LensApertureRange',
@@ -762,6 +803,10 @@ $VERSION = '1.31';
     0x0087 => 'ResolutionMode', #PH (Quattro models)
     0x0088 => 'WhiteBalance', #PH (Quattro models)
     0x008c => 'Firmware', #PH (Quattro models)
+    0x0113 => { #forum17338
+        Name => 'PictureModeStrength',
+        Writable => 'int32s',
+    },
     0x011f => { #IB (FP DNG images)
         Name => 'CameraCalibration',
         Writable => 'float',
@@ -774,6 +819,14 @@ $VERSION = '1.31';
     0x0121 => { #IB (FP DNG images)
         Name => 'WBSettings2',
         SubDirectory => { TagTable => 'Image::ExifTool::Sigma::WBSettings2' },
+    },
+    0x0138 => { #forum17338
+        Name => 'Fade',
+        Writable => 'rational64u',
+    },
+    0x0139 => { #forum17338
+        Name => 'Vignette',
+        Writable => 'rational64u',
     },
 );
 
@@ -837,7 +890,7 @@ Sigma and Foveon maker notes in EXIF information.
 
 =head1 AUTHOR
 
-Copyright 2003-2022, Phil Harvey (philharvey66 at gmail.com)
+Copyright 2003-2026, Phil Harvey (philharvey66 at gmail.com)
 
 This library is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

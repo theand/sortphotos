@@ -2,7 +2,7 @@
 # After "make install" it should work as "perl t/LNK.t".
 
 BEGIN {
-    $| = 1; print "1..2\n"; $Image::ExifTool::configFile = '';
+    $| = 1; print "1..3\n"; $Image::ExifTool::configFile = '';
     require './t/TestLib.pm'; t::TestLib->import();
 }
 END {print "not ok 1\n" unless $loaded;}
@@ -18,12 +18,20 @@ my $testnum = 1;
 
 # test 2: Extract information from LNK file
 {
-    my $exifTool = new Image::ExifTool;
+    my $exifTool = Image::ExifTool->new;
     ++$testnum;
     my $info = $exifTool->ImageInfo('t/images/LNK.lnk');
-    print 'not ' unless check($exifTool, $info, $testname, $testnum);
+    notOK() unless check($exifTool, $info, $testname, $testnum);
     print "ok $testnum\n";
 }
 
+# test 3: Extract information from URL file
+{
+    my $exifTool = Image::ExifTool->new;
+    ++$testnum;
+    my $info = $exifTool->ImageInfo('t/images/LNK.url', '-system:all');
+    notOK() unless check($exifTool, $info, $testname, $testnum);
+    print "ok $testnum\n";
+}
 
-# end
+done(); # end

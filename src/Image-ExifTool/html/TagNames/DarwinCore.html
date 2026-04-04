@@ -194,43 +194,51 @@
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(dctermsLocationVerbatimSRS)</span></span></td></tr>
 <tr>
+<td>DCVerticalDatum</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td><span class=s><span class=n>(dctermsLocationVerticalDatum)</span></span></td></tr>
+<tr class=b>
 <td>DCWaterBody</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(dctermsLocationWaterBody)</span></span></td></tr>
-<tr class=b>
+<tr>
 <td>DCEvent</td>
 <td class=c>struct</td>
 <td>--&gt; <a href='DarwinCore.html#Event'>DarwinCore Event Struct</a>
-  <br><span class='n s'>(called Event by the spec)</span></td></tr>
-<tr>
+  <br><span class='n s'>(tag ID is &#39;Event&#39;)</span></td></tr>
+<tr class=b>
 <td>EventDay</td>
 <td class=c title=' _ = Flattened'>integer_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>EventEarliestDate</td>
 <td class=c title=' _ = Flattened'>date_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>EventEndDayOfYear</td>
 <td class=c title=' _ = Flattened'>integer_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>EventDate</td>
 <td class=c title=' _ = Flattened'>date_</td>
 <td><span class=s><span class=n>(EventEventDate)</span></span></td></tr>
-<tr>
+<tr class=b>
 <td>EventID</td>
 <td class=c title=' / = Avoid
  _ = Flattened'>string/_</td>
 <td><span class=s><span class=n>(EventEventID; avoided in favor of XMP-iptcExt:EventID)</span></span></td></tr>
-<tr class=b>
+<tr>
 <td>EventRemarks</td>
 <td class=c title=' _ = Flattened'>lang-alt_</td>
 <td><span class=s><span class=n>(EventEventRemarks)</span></span></td></tr>
-<tr>
+<tr class=b>
 <td>EventTime</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(EventEventTime)</span></span></td></tr>
+<tr>
+<td>EventEventType</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
 <tr class=b>
 <td>EventFieldNotes</td>
 <td class=c title=' _ = Flattened'>string_</td>
@@ -401,132 +409,148 @@
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
+<td>HumanObservationEventType</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr>
 <td>HumanObservationFieldNotes</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>HumanObservationFieldNumber</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>HumanObservationHabitat</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>HumanObservationLatestDate</td>
 <td class=c title=' _ = Flattened'>date_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>HumanObservationMonth</td>
 <td class=c title=' _ = Flattened'>integer_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>HumanObservationParentEventID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>HumanObservationSampleSizeUnit</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>HumanObservationSampleSizeValue</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>HumanObservationSamplingEffort</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>HumanObservationSamplingProtocol</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>HumanObservationStartDayOfYear</td>
 <td class=c title=' _ = Flattened'>integer_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>HumanObservationVerbatimEventDate</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>HumanObservationYear</td>
 <td class=c title=' _ = Flattened'>integer_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>Identification</td>
 <td class=c>struct</td>
 <td>--&gt; <a href='DarwinCore.html#Identification'>DarwinCore Identification Struct</a></td></tr>
-<tr class=b>
+<tr>
 <td>DateIdentified</td>
 <td class=c title=' _ = Flattened'>date_</td>
 <td><span class=s><span class=n>(IdentificationDateIdentified)</span></span></td></tr>
-<tr>
+<tr class=b>
 <td>IdentificationID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(IdentificationIdentificationID)</span></span></td></tr>
-<tr class=b>
+<tr>
 <td>IdentificationQualifier</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(IdentificationIdentificationQualifier)</span></span></td></tr>
-<tr>
+<tr class=b>
 <td>IdentificationReferences</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(IdentificationIdentificationReferences)</span></span></td></tr>
-<tr class=b>
+<tr>
 <td>IdentificationRemarks</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(IdentificationIdentificationRemarks)</span></span></td></tr>
-<tr>
+<tr class=b>
 <td>IdentificationVerificationStatus</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(IdentificationIdentificationVerificationStatus)</span></span></td></tr>
-<tr class=b>
+<tr>
 <td>IdentifiedBy</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(IdentificationIdentifiedBy)</span></span></td></tr>
+<tr class=b>
+<td>IdentifiedByID</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td><span class=s><span class=n>(IdentificationIdentifiedByID)</span></span></td></tr>
 <tr>
 <td>TypeStatus</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(IdentificationTypeStatus)</span></span></td></tr>
 <tr class=b>
+<td>VerbatimIdentification</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td><span class=s><span class=n>(IdentificationVerbatimIdentification)</span></span></td></tr>
+<tr>
 <td>LivingSpecimen</td>
 <td class=c>struct</td>
 <td>--&gt; <a href='DarwinCore.html#MaterialSample'>DarwinCore MaterialSample Struct</a></td></tr>
-<tr>
+<tr class=b>
 <td>LivingSpecimenMaterialSampleID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>MachineObservation</td>
 <td class=c>struct</td>
 <td>--&gt; <a href='DarwinCore.html#Event'>DarwinCore Event Struct</a></td></tr>
-<tr>
+<tr class=b>
 <td>MachineObservationDay</td>
 <td class=c title=' _ = Flattened'>integer_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>MachineObservationEarliestDate</td>
 <td class=c title=' _ = Flattened'>date_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>MachineObservationEndDayOfYear</td>
 <td class=c title=' _ = Flattened'>integer_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>MachineObservationEventDate</td>
 <td class=c title=' _ = Flattened'>date_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>MachineObservationEventID</td>
 <td class=c title=' / = Avoid
  _ = Flattened'>string/_</td>
 <td><span class=s><span class=n>(avoided in favor of XMP-iptcExt:EventID)</span></span></td></tr>
-<tr class=b>
+<tr>
 <td>MachineObservationEventRemarks</td>
 <td class=c title=' _ = Flattened'>lang-alt_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>MachineObservationEventTime</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td>MachineObservationEventType</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
@@ -630,31 +654,39 @@
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(MeasurementOrFactMeasurementValue)</span></span></td></tr>
 <tr>
+<td>ParentMeasurementID</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td><span class=s><span class=n>(MeasurementOrFactParentMeasurementID)</span></span></td></tr>
+<tr class=b>
 <td>Occurrence</td>
 <td class=c>struct</td>
 <td>--&gt; <a href='DarwinCore.html#Occurrence'>DarwinCore Occurrence Struct</a></td></tr>
-<tr class=b>
+<tr>
 <td>OccurrenceAssociatedMedia</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>OccurrenceAssociatedOccurrences</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>OccurrenceAssociatedReferences</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>OccurrenceAssociatedSequences</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>OccurrenceAssociatedTaxa</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>OccurrenceBehavior</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td>OccurrenceCaste</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
@@ -662,11 +694,19 @@
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr>
-<td>OccurrenceDisposition</td>
+<td>OccurrenceDegreeOfEstablishment</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
+<td>OccurrenceDisposition</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr>
 <td>OccurrenceEstablishmentMeans</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td>OccurrenceGeoreferenceVerificationStatus</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr>
@@ -710,15 +750,23 @@
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr>
-<td>OccurrencePreparations</td>
+<td>OccurrencePathway</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
-<td>OccurrencePreviousIdentifications</td>
+<td>OccurrencePreparations</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr>
+<td>OccurrencePreviousIdentifications</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
 <td>OccurrenceRecordedBy</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td>OccurrenceRecordedByID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
@@ -734,113 +782,121 @@
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr>
+<td>OccurrenceVitality</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
 <td>Organism</td>
 <td class=c>struct</td>
 <td>--&gt; <a href='DarwinCore.html#Organism'>DarwinCore Organism Struct</a></td></tr>
-<tr class=b>
+<tr>
 <td>OrganismAssociatedOccurrences</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>OrganismAssociatedOrganisms</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>OrganismID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(OrganismOrganismID)</span></span></td></tr>
-<tr>
+<tr class=b>
 <td>OrganismName</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(OrganismOrganismName)</span></span></td></tr>
-<tr class=b>
+<tr>
 <td>OrganismRemarks</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(OrganismOrganismRemarks)</span></span></td></tr>
-<tr>
+<tr class=b>
 <td>OrganismScope</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(OrganismOrganismScope)</span></span></td></tr>
-<tr class=b>
+<tr>
 <td>OrganismPreviousIdentifications</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>PreservedSpecimen</td>
 <td class=c>struct</td>
 <td>--&gt; <a href='DarwinCore.html#MaterialSample'>DarwinCore MaterialSample Struct</a></td></tr>
-<tr class=b>
+<tr>
 <td>PreservedSpecimenMaterialSampleID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>Record</td>
 <td class=c>struct</td>
 <td>--&gt; <a href='DarwinCore.html#Record'>DarwinCore Record Struct</a></td></tr>
-<tr class=b>
+<tr>
 <td>RecordBasisOfRecord</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>RecordCollectionCode</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>RecordCollectionID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>RecordDataGeneralizations</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>RecordDatasetID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>RecordDatasetName</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>RecordDynamicProperties</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>RecordInformationWithheld</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>RecordInstitutionCode</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>RecordInstitutionID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>RecordOwnerInstitutionCode</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>ResourceRelationship</td>
 <td class=c>struct</td>
 <td>--&gt; <a href='DarwinCore.html#ResourceRelationship'>DarwinCore ResourceRelationship Struct</a></td></tr>
-<tr class=b>
+<tr>
 <td>RelatedResourceID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(ResourceRelationshipRelatedResourceID)</span></span></td></tr>
-<tr>
+<tr class=b>
 <td>RelationshipAccordingTo</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(ResourceRelationshipRelationshipAccordingTo)</span></span></td></tr>
-<tr class=b>
+<tr>
 <td>RelationshipEstablishedDate</td>
 <td class=c title=' _ = Flattened'>date_</td>
 <td><span class=s><span class=n>(ResourceRelationshipRelationshipEstablishedDate)</span></span></td></tr>
-<tr>
+<tr class=b>
 <td>RelationshipOfResource</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(ResourceRelationshipRelationshipOfResource)</span></span></td></tr>
+<tr>
+<td>RelationshipOfResourceID</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td><span class=s><span class=n>(ResourceRelationshipRelationshipOfResourceID)</span></span></td></tr>
 <tr class=b>
 <td>RelationshipRemarks</td>
 <td class=c title=' _ = Flattened'>string_</td>
@@ -870,7 +926,15 @@
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr>
+<td>TaxonCultivarEpithet</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
 <td>TaxonFamily</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td>TaxonGenericName</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
@@ -882,83 +946,99 @@
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
+<td>TaxonInfragenericEpithet</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr>
 <td>TaxonInfraspecificEpithet</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>TaxonKingdom</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>TaxonNameAccordingTo</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>TaxonNameAccordingToID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>TaxonNamePublishedIn</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>TaxonNamePublishedInID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>TaxonNamePublishedInYear</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>TaxonNomenclaturalCode</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>TaxonNomenclaturalStatus</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>TaxonOrder</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>TaxonOriginalNameUsage</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>TaxonOriginalNameUsageID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>TaxonParentNameUsage</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>TaxonParentNameUsageID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>TaxonPhylum</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>TaxonScientificName</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>TaxonScientificNameAuthorship</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>TaxonScientificNameID</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>TaxonSpecificEpithet</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td>TaxonSubFamily</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr>
 <td>TaxonSubgenus</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td>TaxonSubTribe</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td>TaxonSuperFamily</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
@@ -982,10 +1062,14 @@
 <td class=c title=' _ = Flattened'>string_</td>
 <td><span class=s><span class=n>(TaxonTaxonRemarks)</span></span></td></tr>
 <tr>
-<td>TaxonVerbatimTaxonRank</td>
+<td>TaxonTribe</td>
 <td class=c title=' _ = Flattened'>string_</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
+<td>TaxonVerbatimTaxonRank</td>
+<td class=c title=' _ = Flattened'>string_</td>
+<td>&nbsp;</td></tr>
+<tr>
 <td>TaxonVernacularName</td>
 <td class=c title=' _ = Flattened'>lang-alt_</td>
 <td>&nbsp;</td></tr>
@@ -1170,6 +1254,10 @@
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
+<td>VerticalDatum</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr>
 <td>WaterBody</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
@@ -1210,54 +1298,58 @@
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
+<td>EventType</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr>
 <td>FieldNotes</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>FieldNumber</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>Habitat</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>LatestDate</td>
 <td class=c>date</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>Month</td>
 <td class=c>integer</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>ParentEventID</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>SampleSizeUnit</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>SampleSizeValue</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>SamplingEffort</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>SamplingProtocol</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>StartDayOfYear</td>
 <td class=c>integer</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>VerbatimEventDate</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>Year</td>
 <td class=c>integer</td>
 <td>&nbsp;</td></tr>
@@ -1390,7 +1482,15 @@
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
+<td>IdentifiedByID</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr>
 <td>TypeStatus</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td>VerbatimIdentification</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 </table></td></tr></table></blockquote>
@@ -1437,6 +1537,10 @@
 <td>MeasurementValue</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
+<tr class=b>
+<td>ParentMeasurementID</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
 </table></td></tr></table></blockquote>
 
 <h2><a name='Occurrence'>DarwinCore Occurrence Struct</a></h2>
@@ -1470,7 +1574,15 @@
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr>
+<td>Caste</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
 <td>CatalogNumber</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td>DegreeOfEstablishment</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
@@ -1482,43 +1594,51 @@
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
+<td>GeoreferenceVerificationStatus</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr>
 <td>IndividualCount</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>IndividualID</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>LifeStage</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>OccurrenceDetails</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>OccurrenceID</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>OccurrenceRemarks</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>OccurrenceStatus</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>OrganismQuantity</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>OrganismQuantityType</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>OtherCatalogNumbers</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td>Pathway</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
@@ -1538,11 +1658,19 @@
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
-<td>ReproductiveCondition</td>
+<td>RecordedByID</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr>
+<td>ReproductiveCondition</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
 <td>Sex</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td>Vitality</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 </table></td></tr></table></blockquote>
@@ -1658,14 +1786,18 @@
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr>
-<td>RelationshipRemarks</td>
+<td>RelationshipOfResourceID</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
-<td>ResourceID</td>
+<td>RelationshipRemarks</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr>
+<td>ResourceID</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
 <td>ResourceRelationshipID</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
@@ -1690,7 +1822,15 @@
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
+<td>CultivarEpithet</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr>
 <td>Family</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td>GenericName</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr>
@@ -1702,83 +1842,99 @@
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr>
+<td>InfragenericEpithet</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
 <td>InfraspecificEpithet</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>Kingdom</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>NameAccordingTo</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>NameAccordingToID</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>NamePublishedIn</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>NamePublishedInID</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>NamePublishedInYear</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>NomenclaturalCode</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>NomenclaturalStatus</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>Order</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>OriginalNameUsage</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>OriginalNameUsageID</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>ParentNameUsage</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>ParentNameUsageID</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>Phylum</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>ScientificName</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>ScientificNameAuthorship</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr class=b>
+<tr>
 <td>ScientificNameID</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
-<tr>
+<tr class=b>
 <td>SpecificEpithet</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
+<tr>
+<td>SubFamily</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
 <tr class=b>
+<td>SubTribe</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr>
 <td>Subgenus</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td>SuperFamily</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr>
@@ -1802,10 +1958,14 @@
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr class=b>
-<td>VerbatimTaxonRank</td>
+<td>Tribe</td>
 <td class=c>string</td>
 <td>&nbsp;</td></tr>
 <tr>
+<td>VerbatimTaxonRank</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
 <td>VernacularName</td>
 <td class=c>lang-alt</td>
 <td>&nbsp;</td></tr>
@@ -1813,7 +1973,7 @@
 
 <hr>
 (This document generated automatically by Image::ExifTool::BuildTagLookup)
-<br><i>Last revised Dec 8, 2021</i>
+<br><i>Last revised Sep 22, 2025</i>
 <p class=lf><a href='index.html'>&lt;-- ExifTool Tag Names</a></p>
 </body>
 </html>

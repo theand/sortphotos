@@ -1,10 +1,10 @@
-[ExifTool, ExifTool, ExifTool] ExifToolVersion - ExifTool Version Number: 12.33
+[ExifTool, ExifTool, ExifTool] ExifToolVersion - ExifTool Version Number: 13.51
 [File, System, Other] FileName - File Name: CanonRaw.cr3
 [File, System, Other] Directory - Directory: t/images
-[File, System, Other] FileSize - File Size: 51 KiB
-[File, System, Time] FileModifyDate - File Modification Date/Time: 2019:11:28 07:22:08-05:00
-[File, System, Time] FileAccessDate - File Access Date/Time: 2021:09:30 11:42:30-04:00
-[File, System, Time] FileInodeChangeDate - File Inode Change Date/Time: 2021:09:30 11:41:12-04:00
+[File, System, Other] FileSize - File Size: 53 kB
+[File, System, Time] FileModifyDate - File Modification Date/Time: 2019:03:26 22:05:16-04:00
+[File, System, Time] FileAccessDate - File Access Date/Time: 2026:02:16 21:50:16-05:00
+[File, System, Time] FileInodeChangeDate - File Inode Change Date/Time: 2026:02:07 13:43:05-05:00
 [File, System, Other] FilePermissions - File Permissions: -rw-r--r--
 [File, File, Other] FileType - File Type: CR3
 [File, File, Other] FileTypeExtension - File Type Extension: cr3
@@ -139,7 +139,7 @@
 [MakerNotes, Canon, Camera] 3 - Quality: RAW
 [MakerNotes, Canon, Camera] 4 - Canon Flash Mode: Off
 [MakerNotes, Canon, Camera] 5 - Continuous Drive: Single
-[MakerNotes, Canon, Camera] 7 - Focus Mode: AF + MF
+[MakerNotes, Canon, Camera] 7 - Focus Mode: One-shot AF (Live View)
 [MakerNotes, Canon, Camera] 9 - Record Mode: CR3+JPEG
 [MakerNotes, Canon, Camera] 10 - Canon Image Size: Large
 [MakerNotes, Canon, Camera] 11 - Easy Mode: Manual
@@ -156,7 +156,7 @@
 [MakerNotes, Canon, Camera] 25 - Focal Units: 1/mm
 [MakerNotes, Canon, Camera] 26 - Max Aperture: 3.6
 [MakerNotes, Canon, Camera] 27 - Min Aperture: 23
-[MakerNotes, Canon, Camera] 28 - Flash Activity: 0
+[MakerNotes, Canon, Camera] 28 - Flash Model: n/a
 [MakerNotes, Canon, Camera] 29 - Flash Bits: E-TTL
 [MakerNotes, Canon, Camera] 36 - Zoom Source Width: 0
 [MakerNotes, Canon, Camera] 37 - Zoom Target Width: 0
@@ -222,6 +222,7 @@
 [MakerNotes, Canon, Image] 21 - Focus Distance Lower: 0.22 m
 [MakerNotes, Canon, Image] 23 - Shutter Mode: Electronic First Curtain
 [MakerNotes, Canon, Image] 25 - Flash Exposure Lock: Off
+[MakerNotes, Canon, Image] 32 - Anti Flicker: Off
 [MakerNotes, Canon, Image] 61 - RF Lens Type: n/a
 [MakerNotes, Canon, Camera] 149 - Lens Model: EF-M15-45mm f/3.5-6.3 IS STM
 [MakerNotes, Canon, Camera] 150 - Internal Serial Number: CG0156580
@@ -252,6 +253,8 @@
 [MakerNotes, Canon, Image] 11 - Digital Gain: 0
 [MakerNotes, Canon, Image] 12 - WB Shift AB: 0
 [MakerNotes, Canon, Image] 13 - WB Shift GM: 0
+[MakerNotes, Canon, Image] 14 - Unsharp Mask Fineness: 2
+[MakerNotes, Canon, Image] 15 - Unsharp Mask Threshold: 4
 [MakerNotes, Canon, Camera] 1 - Measured RGGB: 1183 1024 1024 461
 [MakerNotes, Canon, Camera] 180 - Color Space: sRGB
 [MakerNotes, Canon, Camera] 208 - VRD Offset: 0
@@ -273,11 +276,14 @@
 [MakerNotes, Canon, Camera] 5 - Peripheral Lighting Setting: On
 [MakerNotes, Canon, Camera] 6 - Chromatic Aberration Setting: On
 [MakerNotes, Canon, Camera] 7 - Distortion Correction Setting: Off
+[MakerNotes, Canon, Camera] 9 - Digital Lens Optimizer Setting: Off
 [MakerNotes, Canon, Camera] 1 - Peripheral Illumination Corr: Off
 [MakerNotes, Canon, Camera] 2 - Auto Lighting Optimizer: Standard
 [MakerNotes, Canon, Camera] 3 - Highlight Tone Priority: Off
 [MakerNotes, Canon, Camera] 4 - Long Exposure Noise Reduction: Off
 [MakerNotes, Canon, Camera] 5 - High ISO Noise Reduction: Standard
+[MakerNotes, Canon, Camera] 10 - Digital Lens Optimizer: Off
+[MakerNotes, Canon, Camera] 11 - Dual Pixel Raw: Off
 [MakerNotes, Canon, Camera] 1 - Ambience Selection: Standard
 [MakerNotes, Canon, Camera] 257 - Grainy B/W Filter: Off
 [MakerNotes, Canon, Camera] 513 - Soft Focus Filter: Off
@@ -306,7 +312,7 @@
 [MakerNotes, Track4, Camera] 3 - Quality: RAW
 [MakerNotes, Track4, Camera] 4 - Canon Flash Mode: Off
 [MakerNotes, Track4, Camera] 5 - Continuous Drive: Single
-[MakerNotes, Track4, Camera] 7 - Focus Mode: AF + MF
+[MakerNotes, Track4, Camera] 7 - Focus Mode: One-shot AF (Live View)
 [MakerNotes, Track4, Camera] 9 - Record Mode: CR3+JPEG
 [MakerNotes, Track4, Camera] 10 - Canon Image Size: Large
 [MakerNotes, Track4, Camera] 11 - Easy Mode: Manual
@@ -323,7 +329,7 @@
 [MakerNotes, Track4, Camera] 25 - Focal Units: 1/mm
 [MakerNotes, Track4, Camera] 26 - Max Aperture: 3.6
 [MakerNotes, Track4, Camera] 27 - Min Aperture: 23
-[MakerNotes, Track4, Camera] 28 - Flash Activity: 0
+[MakerNotes, Track4, Camera] 28 - Flash Model: n/a
 [MakerNotes, Track4, Camera] 29 - Flash Bits: E-TTL
 [MakerNotes, Track4, Camera] 36 - Zoom Source Width: 0
 [MakerNotes, Track4, Camera] 37 - Zoom Target Width: 0
@@ -378,6 +384,7 @@
 [MakerNotes, Track4, Image] 21 - Focus Distance Lower: 0.22 m
 [MakerNotes, Track4, Image] 23 - Shutter Mode: Electronic First Curtain
 [MakerNotes, Track4, Image] 25 - Flash Exposure Lock: Off
+[MakerNotes, Track4, Image] 32 - Anti Flicker: Off
 [MakerNotes, Track4, Image] 61 - RF Lens Type: n/a
 [MakerNotes, Track4, Image] 1 - Tone Curve: Standard
 [MakerNotes, Track4, Image] 2 - Sharpness: 4
@@ -391,9 +398,12 @@
 [MakerNotes, Track4, Image] 11 - Digital Gain: 0
 [MakerNotes, Track4, Image] 12 - WB Shift AB: 0
 [MakerNotes, Track4, Image] 13 - WB Shift GM: 0
+[MakerNotes, Track4, Image] 14 - Unsharp Mask Fineness: 2
+[MakerNotes, Track4, Image] 15 - Unsharp Mask Threshold: 4
 [MakerNotes, Track4, Camera] 5 - Peripheral Lighting Setting: On
 [MakerNotes, Track4, Camera] 6 - Chromatic Aberration Setting: On
 [MakerNotes, Track4, Camera] 7 - Distortion Correction Setting: Off
+[MakerNotes, Track4, Camera] 9 - Digital Lens Optimizer Setting: Off
 [MakerNotes, Track4, Camera] 0 - Color Data Version: 16 (M50)
 [MakerNotes, Track4, Camera] 71 - WB RGGB Levels As Shot: 1104 1024 1024 1789
 [MakerNotes, Track4, Camera] 75 - Color Temp As Shot: 3284
@@ -503,5 +513,5 @@
 [Composite, Composite, Camera] Exif-CircleOfConfusion - Circle Of Confusion: 0.019 mm
 [Composite, Composite, Image] Exif-DOF - Depth Of Field: 0.03 m (0.22 - 0.25 m)
 [Composite, Composite, Image] Exif-FOV - Field Of View: 75.3 deg
-[Composite, Composite, Camera] Exif-FocalLength35efl - Focal Length: 15.0 mm (35 mm equivalent: 23.3 mm)
+[Composite, Composite, Camera] Exif-FocalLength35efl - Focal Length 35mm Equiv: 15.0 mm (35 mm equivalent: 23.3 mm)
 [Composite, Composite, Camera] Exif-HyperfocalDistance - Hyperfocal Distance: 3.33 m
