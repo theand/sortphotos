@@ -233,8 +233,11 @@ class ExifTool:
         return output.rstrip(' \t\n\r')[:-len(self.sentinel)]
 
     def get_metadata(self, *args: str) -> list[dict[str, Any]]:
+        raw = self.execute(*args)
+        if not raw.strip():
+            return []
         try:
-            return json.loads(self.execute(*args))
+            return json.loads(raw)
         except ValueError as e:
             raise RuntimeError('No files to parse or invalid data') from e
 
