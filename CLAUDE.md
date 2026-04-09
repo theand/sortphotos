@@ -10,7 +10,7 @@ SortPhotos is a Python 3.9+ CLI tool that sorts photos and videos into date-base
 
 ```bash
 # Install in a virtual environment
-python3 -m venv .venv && source .venv/bin/activate
+python3 -m venv venv && source venv/bin/activate
 pip install -e ".[dev]"
 
 # Run directly
