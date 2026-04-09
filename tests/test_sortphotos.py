@@ -26,51 +26,57 @@ from src.sortphotos import (
 
 class TestParseDateExif:
     def test_basic_datetime(self):
-        result = parse_date_exif('2023:06:15 14:30:00')
+        result = parse_date_exif('2023:06:15 14:30:00', 'EXIF')
         assert result == datetime(2023, 6, 15, 14, 30, 0)
 
     def test_date_only_defaults_to_noon(self):
-        result = parse_date_exif('2023:06:15')
+        result = parse_date_exif('2023:06:15', 'EXIF')
         assert result == datetime(2023, 6, 15, 12, 0, 0)
 
     def test_with_positive_timezone(self):
         # +05:00 means subtract 5 hours to get UTC
-        result = parse_date_exif('2023:06:15 14:30:00+05:00')
+        result = parse_date_exif('2023:06:15 14:30:00+05:00', 'EXIF')
         assert result == datetime(2023, 6, 15, 9, 30, 0)
 
     def test_with_negative_timezone(self):
-        result = parse_date_exif('2023:06:15 14:30:00-03:00')
+        result = parse_date_exif('2023:06:15 14:30:00-03:00', 'EXIF')
         assert result == datetime(2023, 6, 15, 17, 30, 0)
 
     def test_with_z_timezone(self):
-        result = parse_date_exif('2023:06:15 14:30:00Z')
+        result = parse_date_exif('2023:06:15 14:30:00Z', 'EXIF')
+        assert result == datetime(2023, 6, 15, 14, 30, 0)
+
+    def test_file_group_skips_timezone_adjust(self):
+        # File-group timestamps already reflect local time; timezone
+        # offset must NOT be applied (see File-group timezone fix).
+        result = parse_date_exif('2023:06:15 14:30:00+05:00', 'File')
         assert result == datetime(2023, 6, 15, 14, 30, 0)
 
     def test_empty_string(self):
-        assert parse_date_exif('') is None
+        assert parse_date_exif('', 'EXIF') is None
 
     def test_zero_date(self):
-        assert parse_date_exif('0000:00:00 00:00:00') is None
+        assert parse_date_exif('0000:00:00 00:00:00', 'EXIF') is None
 
     def test_invalid_string(self):
-        assert parse_date_exif('not a date') is None
+        assert parse_date_exif('not a date', 'EXIF') is None
 
     def test_decimal_in_date(self):
         # timestamps with only time have decimals
-        assert parse_date_exif('12.34.56') is None
+        assert parse_date_exif('12.34.56', 'EXIF') is None
 
     def test_subsecond_time(self):
-        result = parse_date_exif('2023:06:15 14:30:05.123')
+        result = parse_date_exif('2023:06:15 14:30:05.123', 'EXIF')
         assert result == datetime(2023, 6, 15, 14, 30, 5)
 
     def test_hh_mm_only(self):
-        result = parse_date_exif('2023:06:15 14:30')
+        result = parse_date_exif('2023:06:15 14:30', 'EXIF')
         assert result == datetime(2023, 6, 15, 14, 30, 0)
 
     def test_very_old_date(self):
         # Dates before 1900 may or may not be parseable depending on platform.
         # The function tries strftime and returns None if it fails.
-        result = parse_date_exif('1800:01:01 00:00:00')
+        result = parse_date_exif('1800:01:01 00:00:00', 'EXIF')
         # On platforms where strftime handles pre-1900, we get a valid date
         if result is not None:
             assert result == datetime(1800, 1, 1, 0, 0, 0)
@@ -78,19 +84,19 @@ class TestParseDateExif:
 
     def test_none_input(self):
         # str(None) = 'None' which should fail gracefully
-        assert parse_date_exif(None) is None
+        assert parse_date_exif(None, 'EXIF') is None
 
     def test_integer_input(self):
-        assert parse_date_exif(12345) is None
+        assert parse_date_exif(12345, 'EXIF') is None
 
     def test_whitespace_only(self):
-        assert parse_date_exif('   ') is None
+        assert parse_date_exif('   ', 'EXIF') is None
 
     def test_invalid_month(self):
-        assert parse_date_exif('2023:13:15 14:30:00') is None
+        assert parse_date_exif('2023:13:15 14:30:00', 'EXIF') is None
 
     def test_invalid_day(self):
-        assert parse_date_exif('2023:06:32 14:30:00') is None
+        assert parse_date_exif('2023:06:32 14:30:00', 'EXIF') is None
 
 
 # ---------------------------------------------------------------------------
