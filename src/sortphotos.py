@@ -66,7 +66,6 @@ def parse_date_exif(date_string: str, group: str) -> datetime | None:
     hour = 12  # defaulting to noon if no time data provided
     minute = 0
     second = 0
-
     if len(elements) > 1:
         time_entries = re.split(r'(\+|-|Z)', elements[1])  # ['HH:MM:SS', '+', 'HH:MM']
         time = time_entries[0].split(':')  # ['HH', 'MM', 'SS']
@@ -114,6 +113,31 @@ def parse_date_exif(date_string: str, group: str) -> datetime | None:
     return date
 
 
+def collect_candidate_tags(
+    data: dict[str, Any],
+    additional_groups_to_ignore: list[str],
+    additional_tags_to_ignore: list[str],
+) -> dict[str, str]:
+    """Return metadata entries that are eligible for date extraction."""
+
+    ignore_groups = ['ICC_Profile'] + additional_groups_to_ignore
+    ignore_tags = ['SourceFile', 'XMP:HistoryWhen'] + additional_tags_to_ignore
+    candidates: dict[str, str] = {}
+
+    for key, value in data.items():
+        if key in ignore_tags or key.split(':')[0] in ignore_groups or 'GPS' in key:
+            continue
+
+        if isinstance(value, list):
+            if not value:
+                continue
+            value = value[0]
+
+        candidates[key] = str(value)
+
+    return candidates
+
+
 def get_oldest_timestamp(
     data: dict[str, Any],
     additional_groups_to_ignore: list[str],
@@ -129,38 +153,22 @@ def get_oldest_timestamp(
     # save src file
     src_file = data['SourceFile']
 
-    # setup tags to ignore
-    ignore_groups = ['ICC_Profile'] + additional_groups_to_ignore
-    ignore_tags = ['SourceFile', 'XMP:HistoryWhen'] + additional_tags_to_ignore
-
-    logger.debug('All relevant tags:')
+    candidate_tags = collect_candidate_tags(data, additional_groups_to_ignore, additional_tags_to_ignore)
 
     # run through all keys
-    for key in list(data.keys()):
+    for key, date in candidate_tags.items():
+        try:
+            exifdate = parse_date_exif(date, key.split(':')[0])  # check for poor-formed exif data, but allow continuation
+        except Exception:
+            exifdate = None
 
-        # check if this key needs to be ignored, or is in the set of tags that must be used
-        if (key not in ignore_tags) and (key.split(':')[0] not in ignore_groups) and 'GPS' not in key:
+        if exifdate and exifdate < oldest_date:
+            date_available = True
+            oldest_date = exifdate
+            oldest_keys = [key]
 
-            date = data[key]
-
-            logger.debug(f'{key}, {date}')
-
-            # (rare) check if multiple dates returned in a list, take the first one which is the oldest
-            if isinstance(date, list):
-                date = date[0]
-
-            try:
-                exifdate = parse_date_exif(date, key.split(':')[0])  # check for poor-formed exif data, but allow continuation
-            except Exception:
-                exifdate = None
-
-            if exifdate and exifdate < oldest_date:
-                date_available = True
-                oldest_date = exifdate
-                oldest_keys = [key]
-
-            elif exifdate and exifdate == oldest_date:
-                oldest_keys.append(key)
+        elif exifdate and exifdate == oldest_date:
+            oldest_keys.append(key)
 
     if not date_available:
         oldest_date = None
@@ -176,6 +184,46 @@ def check_for_early_morning_photos(date: datetime, day_begins: int) -> datetime:
         date = date - timedelta(hours=date.hour+1)  # push it to the day before for classification purposes
 
     return date
+
+
+def log_file_decision(
+    index: int,
+    total: int,
+    status: str,
+    src_file: str,
+    date: datetime | None = None,
+    matched_keys: list[str] | None = None,
+    candidate_tags: dict[str, str] | None = None,
+    destination: str | None = None,
+    notes: list[str] | None = None,
+) -> None:
+    """Emit a readable per-file debug log block."""
+
+    if not logger.isEnabledFor(logging.DEBUG):
+        return
+
+    lines = [f'[{index}/{total}] {status}', f'  Source: {src_file}']
+
+    if date is not None:
+        lines.append(f'  Date/Time: {date}')
+
+    if matched_keys:
+        lines.append('  Tags used:')
+        for key in matched_keys:
+            value = candidate_tags.get(key) if candidate_tags else None
+            if value is None:
+                lines.append(f'    - {key}')
+            else:
+                lines.append(f'    - {key}: {value}')
+
+    if destination is not None:
+        lines.append(f'  Destination: {destination}')
+
+    if notes:
+        for note in notes:
+            lines.append(f'  Note: {note}')
+
+    logger.debug('\n'.join(lines))
 
 
 def _transfer_file(
@@ -228,7 +276,6 @@ class ExifTool:
         fd = self.process.stdout.fileno()
         while not output.rstrip(' \t\n\r').endswith(self.sentinel):
             increment = os.read(fd, 4096)
-            logger.debug(increment.decode('utf-8'))
             output += increment.decode('utf-8')
         return output.rstrip(' \t\n\r')[:-len(self.sentinel)]
 
@@ -382,17 +429,13 @@ def sortPhotos(
         progress = None
 
     # parse output extracting oldest relevant date
-    for idx, data in enumerate(metadata):
+    for idx, data in enumerate(metadata, start=1):
 
         # extract timestamp date for photo
         src_file, date, keys = get_oldest_timestamp(data, additional_groups_to_ignore, additional_tags_to_ignore)
-
-        if logger.getEffectiveLevel() <= logging.DEBUG:
-            ending = ']'
-            if test:
-                ending = '] (TEST - no files are being moved/copied)'
-            logger.debug(f'[{idx+1}/{num_files}{ending}')
-            logger.debug(f'Source: {src_file}')
+        candidate_tags = None
+        if logger.isEnabledFor(logging.DEBUG):
+            candidate_tags = collect_candidate_tags(data, additional_groups_to_ignore, additional_tags_to_ignore)
 
         # update progress bar
         if progress is not None:
@@ -402,27 +445,38 @@ def sortPhotos(
         if exclude_patterns:
             src_path = Path(src_file)
             if any(fnmatch(src_path.name, pat) or fnmatch(str(src_path), pat) for pat in exclude_patterns):
-                logger.debug(f'Excluded by pattern: {src_file}')
+                log_file_decision(idx, num_files, 'SKIP (excluded)', src_file, notes=['Matched an exclude pattern.'])
                 stats['skipped_excluded'] += 1
                 continue
 
         # check if no valid date found
         if not date:
-            logger.debug('No valid dates were found using the specified tags.  File will remain where it is.')
+            log_file_decision(idx, num_files, 'SKIP (no valid date)', src_file, notes=['No usable date metadata was found.'])
             stats['skipped_no_date'] += 1
             continue
 
         # ignore hidden files
         if Path(src_file).name.startswith('.'):
-            logger.debug('hidden file.  will be skipped')
+            log_file_decision(
+                idx,
+                num_files,
+                'SKIP (hidden)',
+                src_file,
+                date=date,
+                matched_keys=keys,
+                candidate_tags=candidate_tags,
+                notes=['Hidden files are ignored.'],
+            )
             stats['skipped_hidden'] += 1
             continue
 
-        logger.debug(f'Date/Time: {date}')
-        logger.debug(f'Corresponding Tags: {", ".join(keys)}')
+        original_date = date
+        file_notes: list[str] = []
 
         # early morning photos can be grouped with previous day (depending on user setting)
         date = check_for_early_morning_photos(date, day_begins)
+        if date != original_date:
+            file_notes.append(f'Classified under previous day because --day-begins={day_begins}.')
 
         # create folder structure
         dir_structure = date.strftime(sort_format)
@@ -450,14 +504,10 @@ def sortPhotos(
         dest_file = str(dest_path / filename)
         root, ext = os.path.splitext(dest_file)
 
-        if copy_files:
-            logger.debug(f'Destination (copy): {dest_file}')
-        else:
-            logger.debug(f'Destination (move): {dest_file}')
-
         # check for collisions
         append = 1
         fileIsIdentical = False
+        rename_count = 0
 
         while True:
 
@@ -468,7 +518,6 @@ def sortPhotos(
                     dest_compare = dest_file
                 if remove_duplicates and filecmp.cmp(src_file, dest_compare):  # check for identical files
                     fileIsIdentical = True
-                    logger.debug('Identical file already exists.  Duplicate will be ignored.')
                     stats['skipped_duplicate'] += 1
                     break
 
@@ -479,17 +528,46 @@ def sortPhotos(
                     else:
                         dest_file = f'{root}_{append}{ext}'
                     append += 1
+                    rename_count += 1
                     stats['renamed_collision'] += 1
-                    logger.debug(f'Same name already exists...renaming to: {dest_file}')
 
             else:
                 break
+
+        if rename_count:
+            suffix = 's' if rename_count != 1 else ''
+            file_notes.append(f'Renamed to avoid {rename_count} collision{suffix}.')
+
+        if fileIsIdentical:
+            log_file_decision(
+                idx,
+                num_files,
+                'SKIP (duplicate)',
+                src_file,
+                date=original_date,
+                matched_keys=keys,
+                candidate_tags=candidate_tags,
+                destination=dest_file,
+                notes=file_notes + ['Identical file already exists at the destination.'],
+            )
 
         # finally move or copy the file
         if test:
             test_file_dict[dest_file] = src_file
             if not fileIsIdentical:
                 stats['processed'] += 1
+                action = 'PLAN COPY' if copy_files else 'PLAN MOVE'
+                log_file_decision(
+                    idx,
+                    num_files,
+                    action,
+                    src_file,
+                    date=original_date,
+                    matched_keys=keys,
+                    candidate_tags=candidate_tags,
+                    destination=dest_file,
+                    notes=file_notes,
+                )
 
         else:
 
@@ -498,6 +576,18 @@ def sortPhotos(
             else:
                 pending_transfers.append((src_file, dest_file))
                 stats['processed'] += 1
+                action = 'COPY' if copy_files else 'MOVE'
+                log_file_decision(
+                    idx,
+                    num_files,
+                    action,
+                    src_file,
+                    date=original_date,
+                    matched_keys=keys,
+                    candidate_tags=candidate_tags,
+                    destination=dest_file,
+                    notes=file_notes,
+                )
 
     if progress is not None:
         progress.close()
