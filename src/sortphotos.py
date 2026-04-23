@@ -576,7 +576,7 @@ def sortPhotos(
             else:
                 pending_transfers.append((src_file, dest_file))
                 stats['processed'] += 1
-                action = 'COPY' if copy_files else 'MOVE'
+                action = 'QUEUED COPY' if copy_files else 'QUEUED MOVE'
                 log_file_decision(
                     idx,
                     num_files,
