@@ -370,7 +370,11 @@ def sortPhotos(
     pending_transfers: list[tuple[str, str]] = []
 
     # determine if we should show progress bar
-    show_progress = logger.getEffectiveLevel() >= logging.INFO and num_files > 0
+    show_progress = (
+        not logger.isEnabledFor(logging.DEBUG)
+        and logger.isEnabledFor(logging.INFO)
+        and num_files > 0
+    )
     try:
         from tqdm import tqdm
         progress = tqdm(total=num_files, disable=not show_progress, unit='file')
