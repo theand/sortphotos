@@ -63,3 +63,10 @@ Single-file application (`src/sortphotos.py`) with these key components:
 - `--exclude` patterns use `fnmatch` for glob-style filtering
 - `--jobs N` enables parallel file transfers via `ThreadPoolExecutor`
 - Build config is in `pyproject.toml` (no setup.py)
+
+## Agent Notes
+
+- Do not assume sorting also renames files. Filenames stay unchanged unless `--rename` is explicitly provided; collisions may still append numeric suffixes.
+- Do not casually remove `File:*` timestamp fallback logic. In real usage, metadata-less Dropbox-synced, saved, or forwarded images may have no usable date other than filesystem timestamps.
+- Be careful with “cleanup” around `--ignore-groups`. Passing an empty group list changes behavior materially because the default is to ignore the `File` group.
+- Be careful changing timezone handling in `parse_date_exif()`. Midnight/local-date behavior with timezone-bearing EXIF/XMP tags should be validated with real synced examples before changing sorting semantics.
