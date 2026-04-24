@@ -174,6 +174,7 @@ def get_oldest_timestamp(
             oldest_keys = [key]
 
         elif exifdate and localdate and exifdate == oldest_compare_date:
+            # Ties: prefer the latest local date so the folder matches the photographer's day.
             if oldest_local_date is None or localdate > oldest_local_date:
                 oldest_local_date = localdate
             oldest_keys.append(key)
