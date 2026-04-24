@@ -35,7 +35,7 @@ exiftool_location: str = str(Path(__file__).resolve().parent / 'Image-ExifTool' 
 
 # -------- convenience methods -------------
 
-def parse_date_exif(date_string: str, group: str) -> datetime | None:
+def parse_date_exif(date_string: str, group: str, normalize_to_utc: bool = True) -> datetime | None:
     """
     extract date info from EXIF data
     YYYY:MM:DD HH:MM:SS
@@ -66,6 +66,7 @@ def parse_date_exif(date_string: str, group: str) -> datetime | None:
     hour = 12  # defaulting to noon if no time data provided
     minute = 0
     second = 0
+    dateadd = timedelta(0)
     if len(elements) > 1:
         time_entries = re.split(r'(\+|-|Z)', elements[1])  # ['HH:MM:SS', '+', 'HH:MM']
         time = time_entries[0].split(':')  # ['HH', 'MM', 'SS']
@@ -82,13 +83,14 @@ def parse_date_exif(date_string: str, group: str) -> datetime | None:
         if len(time_entries) > 2:
             time_zone = time_entries[2].split(':')  # ['HH', 'MM']
 
-            if len(time_zone) == 2 and group != "File":
+            if len(time_zone) == 2 and group != "File" and normalize_to_utc:
                 time_zone_hour = int(time_zone[0])
                 time_zone_min = int(time_zone[1])
 
                 # check if + or -
                 if time_entries[1] == '+':
                     time_zone_hour *= -1
+                    time_zone_min *= -1
 
                 dateadd = timedelta(hours=time_zone_hour, minutes=time_zone_min)
                 time_zone_adjust = True
@@ -147,7 +149,8 @@ def get_oldest_timestamp(
 
     # save only the oldest date
     date_available = False
-    oldest_date = datetime.now()
+    oldest_compare_date = datetime.now()
+    oldest_local_date: datetime | None = None
     oldest_keys: list[str] = []
 
     # save src file
@@ -158,22 +161,25 @@ def get_oldest_timestamp(
     # run through all keys
     for key, date in candidate_tags.items():
         try:
-            exifdate = parse_date_exif(date, key.split(':')[0])  # check for poor-formed exif data, but allow continuation
+            exifdate = parse_date_exif(date, key.split(':')[0])  # actual instant for comparison
+            localdate = parse_date_exif(date, key.split(':')[0], normalize_to_utc=False)
         except Exception:
             exifdate = None
+            localdate = None
 
-        if exifdate and exifdate < oldest_date:
+        if exifdate and localdate and exifdate < oldest_compare_date:
             date_available = True
-            oldest_date = exifdate
+            oldest_compare_date = exifdate
+            oldest_local_date = localdate
             oldest_keys = [key]
 
-        elif exifdate and exifdate == oldest_date:
+        elif exifdate and localdate and exifdate == oldest_compare_date:
             oldest_keys.append(key)
 
     if not date_available:
-        oldest_date = None
+        oldest_local_date = None
 
-    return src_file, oldest_date, oldest_keys
+    return src_file, oldest_local_date, oldest_keys
 
 
 def check_for_early_morning_photos(date: datetime, day_begins: int) -> datetime:

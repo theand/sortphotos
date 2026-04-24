@@ -52,6 +52,10 @@ class TestParseDateExif:
         result = parse_date_exif('2023:06:15 14:30:00+05:00', 'File')
         assert result == datetime(2023, 6, 15, 14, 30, 0)
 
+    def test_timezone_can_preserve_local_wall_clock_when_requested(self):
+        result = parse_date_exif('2023:06:15 14:30:00+05:00', 'EXIF', normalize_to_utc=False)
+        assert result == datetime(2023, 6, 15, 14, 30, 0)
+
     def test_empty_string(self):
         assert parse_date_exif('', 'EXIF') is None
 
@@ -201,6 +205,17 @@ class TestGetOldestTimestamp:
         src, date, keys = get_oldest_timestamp(data, ['File'], [])
         assert date is None
 
+    def test_mixed_offsets_keep_oldest_actual_instant_but_local_date(self):
+        data = {
+            'SourceFile': '/photo.jpg',
+            'XMP:CreateDate': '2026:04:24 01:00:00+09:00',
+            'QuickTime:CreateDate': '2026:04:23 20:00:00+00:00',
+        }
+        src, date, keys = get_oldest_timestamp(data, [], [])
+        assert src == '/photo.jpg'
+        assert keys == ['XMP:CreateDate']
+        assert date == datetime(2026, 4, 24, 1, 0, 0)
+
 
 # ---------------------------------------------------------------------------
 # check_for_early_morning_photos
@@ -261,6 +276,24 @@ class TestExifTool:
         et.execute = MagicMock(return_value='[{"SourceFile": "test.jpg"}]')
         result = et.get_metadata()
         assert result == [{"SourceFile": "test.jpg"}]
+
+    def test_execute_does_not_log_raw_output(self, caplog):
+        et = ExifTool()
+        mock_process = MagicMock()
+        mock_process.stdin = MagicMock()
+        mock_process.stdout = MagicMock()
+        mock_process.stdout.fileno.return_value = 123
+        et.process = mock_process
+
+        with (
+            patch('src.sortphotos.os.read', return_value=b'[{"SourceFile":"test.jpg"}]\n{ready}'),
+            caplog.at_level(logging.DEBUG, logger='sortphotos'),
+        ):
+            result = et.execute('-json')
+
+        assert result.strip() == '[{"SourceFile":"test.jpg"}]'
+        assert '{"SourceFile":"test.jpg"}' not in caplog.text
+        assert '{ready}' not in caplog.text
 
 
 # ---------------------------------------------------------------------------
@@ -458,6 +491,72 @@ class TestSortPhotos:
             stats = sortPhotos(str(src_dir), str(dest_dir), '%Y/%m-%b', None, test=True)
 
         assert stats['skipped_no_date'] == 1
+
+    def test_verbose_logging_groups_file_details(self, tmp_path, caplog):
+        src_dir = tmp_path / 'src'
+        dest_dir = tmp_path / 'dest'
+        src_dir.mkdir()
+        dest_dir.mkdir()
+
+        self._create_source_files(src_dir, ['photo1.jpg'])
+        metadata = [{
+            'SourceFile': str(src_dir / 'photo1.jpg'),
+            'EXIF:CreateDate': '2023:06:15 14:30:00',
+        }]
+
+        with patch('src.sortphotos.ExifTool') as MockExifTool:
+            mock_et = MagicMock()
+            mock_et.get_metadata.return_value = metadata
+            mock_et.__enter__ = MagicMock(return_value=mock_et)
+            mock_et.__exit__ = MagicMock(return_value=False)
+            MockExifTool.return_value = mock_et
+
+            with caplog.at_level(logging.DEBUG, logger='sortphotos'):
+                stats = sortPhotos(str(src_dir), str(dest_dir), '%Y/%m-%b', None, test=True)
+
+        assert stats['processed'] == 1
+        assert '[1/1] PLAN MOVE' in caplog.text
+        assert f'Source: {src_dir / "photo1.jpg"}' in caplog.text
+        assert 'Tags used:' in caplog.text
+        assert 'EXIF:CreateDate: 2023:06:15 14:30:00' in caplog.text
+        assert f'Destination: {dest_dir / "2023/06-Jun/photo1.jpg"}' in caplog.text
+        assert 'All relevant tags:' not in caplog.text
+        assert 'Corresponding Tags:' not in caplog.text
+
+    def test_timezone_tag_keeps_local_folder_date(self, tmp_path, caplog):
+        src_dir = tmp_path / 'src'
+        dest_dir = tmp_path / 'dest'
+        src_dir.mkdir()
+        dest_dir.mkdir()
+
+        self._create_source_files(src_dir, ['midnight.jpg'])
+        metadata = [{
+            'SourceFile': str(src_dir / 'midnight.jpg'),
+            'Composite:SubSecCreateDate': '2026:04:24 00:08:27.799+09:00',
+            'Composite:SubSecDateTimeOriginal': '2026:04:24 00:08:27.799+09:00',
+            'Composite:SubSecModifyDate': '2026:04:24 00:08:27+09:00',
+        }]
+
+        with patch('src.sortphotos.ExifTool') as MockExifTool:
+            mock_et = MagicMock()
+            mock_et.get_metadata.return_value = metadata
+            mock_et.__enter__ = MagicMock(return_value=mock_et)
+            mock_et.__exit__ = MagicMock(return_value=False)
+            MockExifTool.return_value = mock_et
+
+            with caplog.at_level(logging.DEBUG, logger='sortphotos'):
+                stats = sortPhotos(
+                    str(src_dir),
+                    str(dest_dir),
+                    '%Y-%m-%d',
+                    None,
+                    test=True,
+                    additional_groups_to_ignore=[],
+                )
+
+        assert stats['processed'] == 1
+        assert stats['skipped_no_date'] == 0
+        assert f'Destination: {dest_dir / "2026-04-24/midnight.jpg"}' in caplog.text
 
     def test_exclude_patterns(self, tmp_path):
         src_dir = tmp_path / 'src'
