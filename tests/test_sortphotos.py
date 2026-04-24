@@ -216,6 +216,25 @@ class TestGetOldestTimestamp:
         assert keys == ['XMP:CreateDate']
         assert date == datetime(2026, 4, 24, 1, 0, 0)
 
+    def test_equal_instants_pick_latest_local_date_regardless_of_tag_order(self):
+        orders = [
+            [
+                ('QuickTime:CreateDate', '2026:04:23 15:00:00+00:00'),
+                ('XMP:CreateDate', '2026:04:24 00:00:00+09:00'),
+            ],
+            [
+                ('XMP:CreateDate', '2026:04:24 00:00:00+09:00'),
+                ('QuickTime:CreateDate', '2026:04:23 15:00:00+00:00'),
+            ],
+        ]
+
+        for items in orders:
+            data = {'SourceFile': '/photo.jpg', **dict(items)}
+            src, date, keys = get_oldest_timestamp(data, [], [])
+            assert src == '/photo.jpg'
+            assert set(keys) == {'QuickTime:CreateDate', 'XMP:CreateDate'}
+            assert date == datetime(2026, 4, 24, 0, 0, 0)
+
 
 # ---------------------------------------------------------------------------
 # check_for_early_morning_photos

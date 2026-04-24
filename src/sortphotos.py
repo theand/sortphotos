@@ -174,6 +174,8 @@ def get_oldest_timestamp(
             oldest_keys = [key]
 
         elif exifdate and localdate and exifdate == oldest_compare_date:
+            if oldest_local_date is None or localdate > oldest_local_date:
+                oldest_local_date = localdate
             oldest_keys.append(key)
 
     if not date_available:
