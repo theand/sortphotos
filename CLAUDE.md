@@ -41,7 +41,10 @@ Single-file application (`src/sortphotos.py`) with these key components:
 
 - **`ExifTool` class** — Context manager that keeps a persistent ExifTool subprocess open. Communicates via stdin/stdout with JSON output.
 - **`parse_date_exif()`** — Parses EXIF date strings (`YYYY:MM:DD HH:MM:SS`) including timezone offsets into `datetime` objects.
-- **`get_oldest_timestamp()`** — Iterates all metadata tags for a file, filters by ignore/use-only rules, and returns the oldest valid date.
+- **`collect_candidate_tags()`** — Applies the ignore/use-only rules and returns only date-eligible tags. Note the GPS filter is a substring match (`'GPS' in key`), not a group match.
+- **`get_oldest_timestamp()`** — Iterates candidate tags and returns the oldest valid date, its source tag(s), and the source file.
+- **`check_for_early_morning_photos()`** — Shifts photos taken before `--day-begins` into the previous day for classification.
+- **`log_file_decision()`** — Groups per-file details into one verbose log block.
 - **`sortPhotos()`** — Core engine: extracts metadata, builds destination paths using `strftime`, handles duplicates via `filecmp.cmp`, collects file transfers, then executes them (optionally in parallel with `--jobs`). Returns a stats dict.
 - **`_transfer_file()`** — Helper for moving/copying a single file with error handling. Used by both serial and parallel code paths.
 - **`main()`** — CLI entry point with argparse. Configures logging levels.
@@ -58,7 +61,11 @@ Single-file application (`src/sortphotos.py`) with these key components:
 - Forward slashes in `--sort` format create subdirectories
 - Hidden files (dotfiles) are automatically skipped
 - `ICC_Profile` group and `XMP:HistoryWhen` tag are always ignored for date extraction
+- Any tag whose key contains `GPS` is always ignored (substring match — catches `Composite:GPSDateTime`, `EXIF:GPSDateStamp`, …)
 - The `File` tag group is ignored by default (contains filesystem timestamps, not EXIF data)
+- Subdirectories are **not** traversed unless `-r/--recursive` is given
+- `--day-begins N` groups photos taken before hour N with the previous day
+- Timestamps are compared as tz-naive datetimes normalized to UTC; `parse_date_exif(..., normalize_to_utc=False)` yields the local wall clock used for the folder name
 - Duplicate detection compares both filename and file content via `filecmp.cmp`
 - `--exclude` patterns use `fnmatch` for glob-style filtering
 - `--jobs N` enables parallel file transfers via `ThreadPoolExecutor`
@@ -69,4 +76,4 @@ Single-file application (`src/sortphotos.py`) with these key components:
 - Do not assume sorting also renames files. Filenames stay unchanged unless `--rename` is explicitly provided; collisions may still append numeric suffixes.
 - Do not casually remove `File:*` timestamp fallback logic. In real usage, metadata-less Dropbox-synced, saved, or forwarded images may have no usable date other than filesystem timestamps.
 - Be careful with “cleanup” around `--ignore-groups`. Passing an empty group list changes behavior materially because the default is to ignore the `File` group.
-- Be careful changing timezone handling in `parse_date_exif()`. Midnight/local-date behavior with timezone-bearing EXIF/XMP tags should be validated with real synced examples before changing sorting semantics.
+- Timezone invariant (do not break): the *oldest* tag is chosen by UTC-normalized instant, but the destination folder uses that tag's **local wall-clock** date. On equal UTC instants the **latest local date** wins, so a photographer's midnight photo lands on their own day. Both halves are covered by `test_mixed_offsets_keep_oldest_actual_instant_but_local_date` and `test_equal_instants_pick_latest_local_date_regardless_of_tag_order`; validate against real synced examples before changing.
