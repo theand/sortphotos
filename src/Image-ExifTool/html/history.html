@@ -17,6 +17,70 @@ considered development releases, and are not uploaded to <a href="https://metacp
 <!-- Use line width of 80 -->
 <!-- *********************************************************************** -->
 
+<a name='v13.59'><b>May 27, 2026 - Version 13.59</b></a>
+<ul>
+<li>Security update
+<li>Added NewUUID <a href="TagNames/Extra.html">Extra tag</a> (thanks Daniel Dumitriu, <a href="https://github.com/exiftool/exiftool/issues/421">github #421</a>)
+<li>Added a new Canon RF lens (thanks Norbert Wasser)
+<li>Added config_files/novelty.config to the distribution (<a href="https://github.com/exiftool/exiftool/issues/422">github #422</a>)
+<li>Decode tags from the Sony ILCE-7RM6 (thanks Jos Roost)
+<li>Decode a new FujiFilm tag (thanks Iliah Borg)
+<li>Decode a few more DJI protobuf tags
+<li>Decode a new Ricoh Pentax tag
+<li>Issue Error instead of Warning when writing XMP with some problems which
+    could cause loss of data
+<li>Improved error message when reading wrongly encoded CSV or JSON file
+<li>Enhanced -config option to allow piped input with "-config -"
+<li>Enhanced -validate option to do more strict checking of EXIF-for-XMP tags
+<li>Patched -sort option avoid inconsistent output ordering of same-named tags
+<li>Patched Composite SubSec date/time tags to specify the EXIF group for the
+    SubSec and OffsetTime tags upon which they are based (avoids non-standard
+    XMP tags from being incorrectly used here)
+<li>Fixed bug in -diff feature when finding differences for specific tags and a
+    specified tag was missing from the source file
+</ul>
+
+<a name='v13.58'><b>May 5, 2026 - Version 13.58</b></a>
+<ul>
+<li>Added a few new Nikon Z lenses (thanks Warren Hatch)
+<li>Added a few new QuickTime MajorBrand values (thanks Herb)
+<li>Added a new RAFCompression value
+<li>Added undocumented -eh option (alias for -E/-escapeHTML)
+<li>Decode timed GPS from INNOVV N2 TS videos
+<li>Improved decoding of Canon ColorData for some models (thanks Iliah Borg)
+<li>Changed the name of the RAFVersion tag to FirmwareVersion
+<li>Removed conversion for Garmin FIT DeviceIndex values
+<li>Properly parse XML CDATA and comment sections
+<li>Fixed issue which could cause failed Garmin test on some systems
+</ul>
+
+<a name='v13.57'><b>Apr. 17, 2026 - Version 13.57</b></a>
+<ul>
+<li>Added print conversions for Garmin FIT enum tags
+<li>Decode a number of undocumented Garmin FIT tags
+<li>Reverted XML patch of 13.56 which broke structured output for XMP files with
+    an XML header
+</ul>
+
+<a name='v13.56'><b>Apr. 15, 2026 - Version 13.56</b> - "Exif 3.1"</a>
+<ul>
+<li>Added new tags of the Exif 3.1 specification
+<li>Added ability to geotag directly from any supported file(s) containing GPS
+<li>Added read support for <a href="TagNames/Garmin.html">Garmin FIT files</a>, and the ability to use them with
+    the -geotag option
+<li>Added a new Panasonic AFAreaMode (thanks Andrew)
+<li>Decode maker notes from newer FLIR cameras (<a href="https://github.com/exiftool/exiftool/issues/408">github #408</a>)
+<li>Improved config_files/local_time.config to add LocalTag UserParam feature
+<li>Updated Compression value re-purposed by GoPro (<a href="https://github.com/exiftool/exiftool/issues/411">github #411</a>)
+<li>Allow a few more different characters in the Windows -progress title string
+<li>Avoid trying to return structured information from XML files
+<li>Patched bug when reading QuickTime MTDT metadata (thanks Thurein Oo)
+<li>API Changes:
+    <ul>
+    <li>Enhanced GetValue so input tag name is no longer case sensitive
+    </ul>
+</ul>
+
 <a name='v13.55'><b>Apr. 7, 2026 - Version 13.55</b></a> <span class=grn>(production release)</span>
 <ul>
 <li>Added a few new Windows LNK GUID values
@@ -84,7 +148,7 @@ considered development releases, and are not uploaded to <a href="https://metacp
 
 <a name='v13.50'><b>Feb. 7, 2026 - Version 13.50</b></a> <span class=grn>(production release)</span>
 <ul>
-<li>Security update (MacOS only, thanks Tay Kiat Loong)
+<li>Security update (MacOS only)
 <li>Added a few new Sony lenses (thanks Jos Roost)
 <li>Added a couple of new Canon lenses (thanks Norbert Wasser)
 <li>Decode another Samsung trailer tag

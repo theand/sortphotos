@@ -7,6 +7,64 @@ RSS feed: https://exiftool.org/rss.xml
 Note: The most recent production release is Version 13.55. (Other versions are
 considered development releases, and are not uploaded to MetaCPAN.)
 
+May 27, 2026 - Version 13.59
+
+  - Security update
+  - Added NewUUID Extra tag (thanks Daniel Dumitriu, github #421)
+  - Added a new Canon RF lens (thanks Norbert Wasser)
+  - Added config_files/novelty.config to the distribution (github #422)
+  - Decode tags from the Sony ILCE-7RM6 (thanks Jos Roost)
+  - Decode a new FujiFilm tag (thanks Iliah Borg)
+  - Decode a few more DJI protobuf tags
+  - Decode a new Ricoh Pentax tag
+  - Issue Error instead of Warning when writing XMP with some problems which
+    could cause loss of data
+  - Improved error message when reading wrongly encoded CSV or JSON file
+  - Enhanced -config option to allow piped input with "-config -"
+  - Enhanced -validate option to do more strict checking of EXIF-for-XMP tags
+  - Patched -sort option avoid inconsistent output ordering of same-named tags
+  - Patched Composite SubSec date/time tags to specify the EXIF group for the
+    SubSec and OffsetTime tags upon which they are based (avoids non-standard
+    XMP tags from being incorrectly used here)
+  - Fixed bug in -diff feature when finding differences for specific tags and a
+    specified tag was missing from the source file
+
+May 5, 2026 - Version 13.58
+
+  - Added a few new Nikon Z lenses (thanks Warren Hatch)
+  - Added a few new QuickTime MajorBrand values (thanks Herb)
+  - Added a new RAFCompression value
+  - Added undocumented -eh option (alias for -E/-escapeHTML)
+  - Decode timed GPS from INNOVV N2 TS videos
+  - Improved decoding of Canon ColorData for some models (thanks Iliah Borg)
+  - Changed the name of the RAFVersion tag to FirmwareVersion
+  - Removed conversion for Garmin FIT DeviceIndex values
+  - Properly parse XML CDATA and comment sections
+  - Fixed issue which could cause failed Garmin test on some systems
+
+Apr. 17, 2026 - Version 13.57
+
+  - Added print conversions for Garmin FIT enum tags
+  - Decode a number of undocumented Garmin FIT tags
+  - Reverted XML patch of 13.56 which broke structured output for XMP files with
+    an XML header
+
+Apr. 15, 2026 - Version 13.56 - "Exif 3.1"
+
+  - Added new tags of the Exif 3.1 specification
+  - Added ability to geotag directly from any supported file(s) containing GPS
+  - Added read support for Garmin FIT files, and the ability to use them with
+    the -geotag option
+  - Added a new Panasonic AFAreaMode (thanks Andrew)
+  - Decode maker notes from newer FLIR cameras (github #408)
+  - Improved config_files/local_time.config to add LocalTag UserParam feature
+  - Updated Compression value re-purposed by GoPro (github #411)
+  - Allow a few more different characters in the Windows -progress title string
+  - Avoid trying to return structured information from XML files
+  - Patched bug when reading QuickTime MTDT metadata (thanks Thurein Oo)
+  - API Changes:
+      - Enhanced GetValue so input tag name is no longer case sensitive
+
 Apr. 7, 2026 - Version 13.55 (production release)
 
   - Added a few new Windows LNK GUID values
@@ -69,7 +127,7 @@ Feb. 19, 2026 - Version 13.51
 
 Feb. 7, 2026 - Version 13.50 (production release)
 
-  - Security update (MacOS only, thanks Tay Kiat Loong)
+  - Security update (MacOS only)
   - Added a few new Sony lenses (thanks Jos Roost)
   - Added a couple of new Canon lenses (thanks Norbert Wasser)
   - Decode another Samsung trailer tag
@@ -1381,7 +1439,7 @@ June 28, 2023 - Version 12.64
       - Added NoDups option to eliminate duplicate items from queued values when
         writing List-type tags
 
-June 8, 2023 - Version 12.63
+June 8, 2023 - Version 12.63 - "Exif 3.0"
 
   - Added ability to read/write/create Brotli-compressed metadata in JXL images
     (requires IO::Compress::Brotli)
