@@ -35,6 +35,8 @@ pytest -k "test_basic_datetime"                      # run by name
 
 Tests use `unittest.mock` to patch `ExifTool` for integration tests, avoiding the need for perl in CI. The ExifTool context manager test is skipped if perl is not available.
 
+Because ExifTool is mocked, `pytest` cannot catch vendored-ExifTool regressions. Verify those directly: `perl src/Image-ExifTool/exiftool -ver`, a real extraction (`perl src/Image-ExifTool/exiftool -j -time:all <file>`), and an end-to-end dry run over a few files copied from `src/Image-ExifTool/t/images/`.
+
 ## Architecture
 
 Single-file application (`src/sortphotos.py`) with these key components:
@@ -70,6 +72,12 @@ Single-file application (`src/sortphotos.py`) with these key components:
 - `--exclude` patterns use `fnmatch` for glob-style filtering
 - `--jobs N` enables parallel file transfers via `ThreadPoolExecutor`
 - Build config is in `pyproject.toml` (no setup.py)
+
+## Upgrading vendored ExifTool
+
+- Get the tarball from the GitHub tag (`https://github.com/exiftool/exiftool/archive/refs/tags/<ver>.tar.gz`) — `exiftool.org` hosts only the current release and 404s otherwise.
+- Sync against the distribution `MANIFEST`, not the GitHub tree, which carries ~30 files the distribution omits (`LICENSE`, `validate`, `windows_exiftool`, html PDFs). New tag modules (e.g. `Garmin.pm` in 13.59) *are* in MANIFEST, so a bump is not always update-only — diff MANIFEST against `git ls-files` before assuming otherwise.
+- Four MANIFEST fixtures (`t/images/EXE.so`, `Text.csv`, `Geotag_DJI_*.csv`, `LNK.lnk`) stay untracked because `*.so`/`*.csv`/`*.lnk` are gitignored. This gap predates 13.55 — it is the baseline, not a regression.
 
 ## Agent Notes
 
